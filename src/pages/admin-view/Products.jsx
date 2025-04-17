@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 const AdminProducts = () => {
   return (
-    <div>
-      product listing
-    </div>
+    <Fragment>
+      
+    </Fragment>
   )
 }
 
