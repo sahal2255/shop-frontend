@@ -65,21 +65,21 @@ const CommonForm = ({ fromCotrols, formData, setFormData, onSubmit, buttonText }
           />
         );
 
-      case "file":
-        return (
-          <Input
-            name={getControlItem.name}
-            id={getControlItem.name}
-            type="file"
-            accept={getControlItem.accept || "image/*"}
-            onChange={(event) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: event.target.files[0],
-              })
-            }
-          />
-        );
+      // case "file":
+      //   return (
+      //     <Input
+      //       name={getControlItem.name}
+      //       id={getControlItem.name}
+      //       type="file"
+      //       accept={getControlItem.accept || "image/*"}
+      //       onChange={(event) =>
+      //         setFormData({
+      //           ...formData,
+      //           [getControlItem.name]: event.target.files[0],
+      //         })
+      //       }
+      //     />
+      //   );
 
       default:
         return (
