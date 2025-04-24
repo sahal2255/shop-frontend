@@ -75,14 +75,6 @@ export const addProductFormElement = [
       type: 'text',
       placeholder: 'Enter Product Title'
     },
-    // {
-    //     label: 'Product Image',
-    //     name: 'image',
-    //     componentType: 'file',
-    //     type: 'file',
-    //     accept: 'image/*',
-    //     placeholder: 'Upload Product Image'
-    //   },
     {
       label: 'Description',
       name: 'description',

@@ -1,43 +1,58 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import React, { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import { Input } from '../ui/input'
+import axios from 'axios'
+import { axiosInstance } from '@/helpers/axiosInstance'
 
-const ImageUpload = ({ file,setFile,uploadImageUrl,setUploadImageUrl }) => {
-  const fileInputRef = useRef(null)
+const ImageUpload = ({ file, setFile }) => {
+  const inputRef = useRef(null)
   const [preview, setPreview] = useState(null)
-    const inputRef=useRef(null)
-    const handleFileChange=(event)=>{
-        console.log(event.target.files)
-        const selectedFile=event.target.files?.[0];
-        if(selectedFile) setFile(selectedFile)
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files?.[0]
+    if (selectedFile) {
+      setFile(selectedFile)
+
+      // Generate preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreview(reader.result)
+      }
+      reader.readAsDataURL(selectedFile)
     }
-  
- 
+  }
+
+  const handleRemoveImage = () => {
+    setFile(null)
+    setPreview(null)
+    if (inputRef.current) {
+      inputRef.current.value = null
+    }
+  }
 
   return (
     <div className="space-y-4">
+      <label htmlFor="image-upload" className="font-medium text-primary">
+        Upload Product Image
+      </label>
       <Input
         type="file"
         accept="image/*"
         ref={inputRef}
         onChange={handleFileChange}
-        // className="hidden"
+        className="mt-2"
         id="image-upload"
       />
-      <label htmlFor="upload-input">
-        <Button type="button" variant="outline">
-          Upload Image
-        </Button>
-      </label>
 
-      {preview && (
+      {file && (
         <div className="relative w-40 h-40 border rounded-md overflow-hidden shadow-md">
-          <img
-            src={preview}
-            alt="Preview"
-            className="object-cover w-full h-full"
-          />
+          {preview && (
+            <img
+              src={preview}
+              alt="Preview"
+              className="object-cover w-full h-full"
+            />
+          )}
           <button
             type="button"
             onClick={handleRemoveImage}
