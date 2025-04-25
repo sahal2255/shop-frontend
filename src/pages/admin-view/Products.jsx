@@ -13,7 +13,7 @@ import React, { Fragment, useState } from "react";
 
 const initialFormdata = {
   imageFile: "",
-  productname: "",
+  productName: "",
   description: "",
   category: "",
   brand: "",

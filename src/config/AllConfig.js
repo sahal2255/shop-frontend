@@ -70,7 +70,7 @@ export const adminSideMenuItems=[
 export const addProductFormElement = [
     {
       label: 'Proudct Name',
-      name: 'productname',
+      name: 'productName',
       componentType: 'input',
       type: 'text',
       placeholder: 'Enter Product Title'
