@@ -61,6 +61,10 @@ export const checkAuth = createAsyncThunk("/auth/check-auth", async () => {
     return message;
   }
 });
+// logout function
+// export const logout=createSlice({
+
+// })
 const authSlice = createSlice({
   name: "auth",
   initialState,

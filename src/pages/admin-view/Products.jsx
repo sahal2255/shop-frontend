@@ -14,7 +14,7 @@ import { axiosInstance } from "@/helpers/axiosInstance";
 import { addNewProduct, fetchAllProducts } from "@/store/admin/product-slice";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import ProductTile from "@/components/admin-view/ProductTile";
 const initialFormdata = {
   imageFile: "",
   productName: "",
@@ -29,7 +29,10 @@ const AdminProducts = () => {
   const [openAddProduct, setOpenAddProduct] = useState(false);
   const [formData, setFormData] = useState(initialFormdata);
   const [imageFile, setImageFile] = useState(null);
-  const { productList, isLoading, isAddingProduct } = useSelector(
+  const [currentEditedId,setCurrentEditedId]=useState(null)
+  const [createProductsDialog,setCreateProductsDialog]=useState(false)
+
+  const { productsList, isLoading, isAddingProduct } = useSelector(
     (state) => state.adminProducts
   );
   const dispatch = useDispatch();
@@ -61,49 +64,82 @@ const AdminProducts = () => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  console.log("product list", productList);
+  console.log("product list", productsList);
+
+  
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
-        <Button onClick={() => setOpenAddProduct(true)}>Add New Product</Button>
-      </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4  ">
-        <Sheet
-          open={openAddProduct}
-          onOpenChange={() => setOpenAddProduct(false)}
-        >
-          <SheetContent
-            side="right"
-            className="overflow-auto max-w-md w-full bg-white dark:bg-[#1A1A2E] p-6 shadow-xl border-l border-gray-200 dark:border-gray-700"
-          >
-            <SheetHeader>
-              <SheetTitle className="text-2xl font-semibold text-black dark:text-white text-center">
-                Add New Product
-              </SheetTitle>
-            </SheetHeader>
-            {isAddingProduct ? (
-              <div className="space-y-4 mt-6">
-                <Skeleton className="w-[250px] h-[30px] rounded-md" />
-                <Skeleton className="w-[200px] h-[20px] rounded-full" />
-                <Skeleton className="w-[300px] h-[20px] rounded-full" />
+      <div className="space-y-4 ">
+        {/* Header section with Add Button */}
+        <div className="w-full flex justify-end">
+          <Button onClick={() => setOpenAddProduct(true)}>
+            Add New Product
+          </Button>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-auto">
+          {isLoading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="space-y-4 mt-6">
+                <Skeleton className="w-full h-40 mb-4 rounded-md" />
+                <Skeleton className="w-3/4 h-6 mb-2 rounded" />
+                <Skeleton className="w-1/2 h-5 mb-2 rounded" />
+                <Skeleton className="w-full h-10 rounded" />
               </div>
-            ) : (
-              <>
-                <ImageUpload file={imageFile} setFile={setImageFile} />
-                <div className="py-6">
-                  <CommonForm
-                    formData={formData}
-                    onSubmit={onSubmit}
-                    fromCotrols={addProductFormElement}
-                    setFormData={setFormData}
-                    buttonText="Add New"
-                  />
-                </div>
-              </>
-            )}
-          </SheetContent>
-        </Sheet>
+            ))
+          ) : productsList?.length ? (
+            productsList.map((product) => (
+              <ProductTile
+                key={product._id}
+                product={product}
+                setCurrentEditedId={setCurrentEditedId}
+                setOpenAddProduct={setOpenAddProduct}
+                setFormData={setFormData}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center text-gray-500">
+              No products found.
+            </div>
+          )}
+        </div>
       </div>
+
+      <Sheet
+        open={openAddProduct}
+        onOpenChange={() => setOpenAddProduct(false)}
+      >
+        <SheetContent
+          side="right"
+          className="overflow-auto max-w-md w-full bg-white dark:bg-[#1A1A2E] p-6 shadow-xl border-l border-gray-200 dark:border-gray-700"
+        >
+          <SheetHeader>
+            <SheetTitle className="text-2xl font-semibold text-black dark:text-white text-center">
+              Add New Product
+            </SheetTitle>
+          </SheetHeader>
+          {isAddingProduct ? (
+            <div className="space-y-4 mt-6">
+              <Skeleton className="w-[250px] h-[30px] rounded-md" />
+              <Skeleton className="w-[200px] h-[20px] rounded-full" />
+              <Skeleton className="w-[300px] h-[20px] rounded-full" />
+            </div>
+          ) : (
+            <>
+              <ImageUpload file={imageFile} setFile={setImageFile} />
+              <div className="py-6">
+                <CommonForm
+                  formData={formData}
+                  onSubmit={onSubmit}
+                  fromCotrols={addProductFormElement}
+                  setFormData={setFormData}
+                  buttonText="Add New"
+                />
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </Fragment>
   );
 };
