@@ -6,8 +6,10 @@ const initialState = {
   isLoading: false,
   productsList: [],
   isAddingProduct:false,
+  isDeleteProduct:false,
 };
 
+//fetch all product section
 export const fetchAllProducts = createAsyncThunk(
   "/admin/getproduct",
   async () => {
@@ -19,6 +21,7 @@ export const fetchAllProducts = createAsyncThunk(
   }
 );
 
+// add new product section
 export const addNewProduct = createAsyncThunk(
   "/admin/product/add-product",
   async (formData) => {
@@ -35,6 +38,22 @@ export const addNewProduct = createAsyncThunk(
   }
 );
 
+
+// edit exist product section
+export const editExistProduct=createAsyncThunk(
+  "/admin/prdouct/edit",
+)
+
+// delete selected product section
+
+export const deleteExistProduct=createAsyncThunk(
+ "/admin/product/delete",
+  async(id)=>{
+    const response=await axios.delete(
+      `http://localhost:7002/api/admin/product/delete/${id}`
+    )
+  }
+)
 const AdminProductSlice = createSlice({
   name: "adminProducts",
   initialState,
@@ -66,8 +85,10 @@ const AdminProductSlice = createSlice({
       })
       .addCase(addNewProduct.rejected, (state) => {
         state.isAddingProduct = false;
-      });
+      })
 
+      // delete product section 
+      .addCase(deleteExistProduct.pending,(state))
       
   },
 });

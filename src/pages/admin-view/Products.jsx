@@ -30,8 +30,7 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(initialFormdata);
   const [imageFile, setImageFile] = useState(null);
   const [currentEditedId,setCurrentEditedId]=useState(null)
-  const [createProductsDialog,setCreateProductsDialog]=useState(false)
-
+  const [currentDeleteId,setCurrentDeleteId]=useState(null)
   const { productsList, isLoading, isAddingProduct } = useSelector(
     (state) => state.adminProducts
   );
@@ -65,7 +64,7 @@ const AdminProducts = () => {
   }, [dispatch]);
 
   console.log("product list", productsList);
-
+  console.log('deleted id',currentDeleteId)
   
   return (
     <Fragment>
@@ -95,6 +94,7 @@ const AdminProducts = () => {
                 setCurrentEditedId={setCurrentEditedId}
                 setOpenAddProduct={setOpenAddProduct}
                 setFormData={setFormData}
+                setCurrentDeleteId={setCurrentDeleteId}
               />
             ))
           ) : (
@@ -126,14 +126,14 @@ const AdminProducts = () => {
             </div>
           ) : (
             <>
-              <ImageUpload file={imageFile} setFile={setImageFile} />
+              <ImageUpload file={imageFile} setFile={setImageFile} currentEditedId={currentEditedId} />
               <div className="py-6">
                 <CommonForm
                   formData={formData}
                   onSubmit={onSubmit}
                   fromCotrols={addProductFormElement}
                   setFormData={setFormData}
-                  buttonText="Add New"
+                  buttonText={currentEditedId ? "Update Product" : "Add New"}
                 />
               </div>
             </>
