@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { addProductFormElement } from "@/config/AllConfig";
 import { axiosInstance } from "@/helpers/axiosInstance";
-import { addNewProduct, fetchAllProducts } from "@/store/admin/product-slice";
+import { addNewProduct, deleteExistProduct, fetchAllProducts } from "@/store/admin/product-slice";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductTile from "@/components/admin-view/ProductTile";
@@ -30,8 +30,8 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(initialFormdata);
   const [imageFile, setImageFile] = useState(null);
   const [currentEditedId,setCurrentEditedId]=useState(null)
-  const [currentDeleteId,setCurrentDeleteId]=useState(null)
-  const { productsList, isLoading, isAddingProduct } = useSelector(
+  // const [currentDeleteId,setCurrentDeleteId]=useState(null)
+  const { productsList, isLoading, isAddingProduct,isDeleteProduct } = useSelector(
     (state) => state.adminProducts
   );
   const dispatch = useDispatch();
@@ -52,19 +52,35 @@ const AdminProducts = () => {
           console.log("datapayload", data.payload);
           setOpenAddProduct(false);
           toast.success(data.payload?.message);
+          dispatch(fetchAllProducts())
         } else {
           toast.error(data.payload);
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log('error add product function',error)
+    }
   };
-
+  const deleteProduct=async(id)=>{
+    console.log('delete id in main prodcut',id)
+    dispatch(deleteExistProduct(id)).then((data)=>{
+      if(data.payload?.success){
+        console.log('delete product response',data.payload)
+        toast.success(data.payload?.message)
+        dispatch(fetchAllProducts())
+      }else{
+        toast.error(data.payload)
+      }
+    }
+    )
+    
+  }
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
+  
   console.log("product list", productsList);
-  console.log('deleted id',currentDeleteId)
   
   return (
     <Fragment>
@@ -77,7 +93,7 @@ const AdminProducts = () => {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-auto">
-          {isLoading ? (
+          {isLoading || isDeleteProduct||isAddingProduct ? (
             Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="space-y-4 mt-6">
                 <Skeleton className="w-full h-40 mb-4 rounded-md" />
@@ -94,7 +110,8 @@ const AdminProducts = () => {
                 setCurrentEditedId={setCurrentEditedId}
                 setOpenAddProduct={setOpenAddProduct}
                 setFormData={setFormData}
-                setCurrentDeleteId={setCurrentDeleteId}
+                deleteProduct={deleteProduct}
+                
               />
             ))
           ) : (

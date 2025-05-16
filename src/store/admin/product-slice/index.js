@@ -51,7 +51,8 @@ export const deleteExistProduct=createAsyncThunk(
   async(id)=>{
     const response=await axios.delete(
       `http://localhost:7002/api/admin/product/delete/${id}`
-    )
+    );
+    return response.data
   }
 )
 const AdminProductSlice = createSlice({
@@ -88,7 +89,18 @@ const AdminProductSlice = createSlice({
       })
 
       // delete product section 
-      .addCase(deleteExistProduct.pending,(state))
+      .addCase(deleteExistProduct.pending,(state)=>{
+        state.isDeleteProduct=true
+      })
+      .addCase(deleteExistProduct.fulfilled,(state,action)=>{
+        state.isDeleteProduct=false,
+        state.productsList=state.productsList.filter(
+          (product)=>product._id!==action.payload
+        )
+      })
+      .addCase(deleteExistProduct.rejected,(state)=>{
+        state.isDeleteProduct=false
+      })
       
   },
 });

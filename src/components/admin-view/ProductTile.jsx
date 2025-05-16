@@ -3,7 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { set } from 'react-hook-form';
 
-const ProductTile = ({ product,setFormData,setCurrentEditedId,setOpenAddProduct ,setCurrentDeleteId}) => {
+const ProductTile = ({ product,setFormData,setCurrentEditedId,setOpenAddProduct ,deleteProduct}) => {
 
     const onEdit=()=>{
         setOpenAddProduct(true);
@@ -11,7 +11,8 @@ const ProductTile = ({ product,setFormData,setCurrentEditedId,setOpenAddProduct 
         setFormData(product);
     }
     const onDelete=async(id)=>{
-      setCurrentDeleteId(id)
+      console.log('delete clicking',id)
+      deleteProduct(id)
     }
   return (
     <Card className="w-full max-w-sm mx-auto rounded-lg shadow hover:shadow-lg transition duration-300 overflow-hidden">
