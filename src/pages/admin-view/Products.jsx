@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/sheet";
 import { addProductFormElement } from "@/config/AllConfig";
 import { axiosInstance } from "@/helpers/axiosInstance";
-import { addNewProduct, deleteExistProduct, fetchAllProducts } from "@/store/admin/product-slice";
+import {
+  addNewProduct,
+  deleteExistProduct,
+  fetchAllProducts,
+} from "@/store/admin/product-slice";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductTile from "@/components/admin-view/ProductTile";
@@ -29,11 +33,10 @@ const AdminProducts = () => {
   const [openAddProduct, setOpenAddProduct] = useState(false);
   const [formData, setFormData] = useState(initialFormdata);
   const [imageFile, setImageFile] = useState(null);
-  const [currentEditedId,setCurrentEditedId]=useState(null)
+  const [currentEditedId, setCurrentEditedId] = useState(null);
   // const [currentDeleteId,setCurrentDeleteId]=useState(null)
-  const { productsList, isLoading, isAddingProduct,isDeleteProduct } = useSelector(
-    (state) => state.adminProducts
-  );
+  const { productsList, isLoading, isAddingProduct, isDeleteProduct } =
+    useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
 
   const onSubmit = async (e) => {
@@ -47,41 +50,43 @@ const AdminProducts = () => {
       Object.entries(formData).forEach(([key, value]) => {
         form.append(key, value);
       });
-      dispatch(addNewProduct(form)).then((data) => {
-        if (data.payload?.success) {
-          console.log("datapayload", data.payload);
-          setOpenAddProduct(false);
-          toast.success(data.payload?.message);
-          dispatch(fetchAllProducts())
-        } else {
-          toast.error(data.payload);
-        }
-      });
+      if(currentEditedId){
+
+      }else{
+
+        dispatch(addNewProduct(form)).then((data) => {
+          if (data.payload?.success) {
+            console.log("datapayload", data.payload);
+            setOpenAddProduct(false);
+            toast.success(data.payload?.message);
+            dispatch(fetchAllProducts());
+          } else {
+            toast.error(data.payload);
+          }
+        });
+      }
     } catch (error) {
-      console.log('error add product function',error)
+      console.log("error add product function", error);
     }
   };
-  const deleteProduct=async(id)=>{
-    console.log('delete id in main prodcut',id)
-    dispatch(deleteExistProduct(id)).then((data)=>{
-      if(data.payload?.success){
-        console.log('delete product response',data.payload)
-        toast.success(data.payload?.message)
-        dispatch(fetchAllProducts())
-      }else{
-        toast.error(data.payload)
+  const deleteProduct = async (id) => {
+    console.log("delete id in main prodcut", id);
+    dispatch(deleteExistProduct(id)).then((data) => {
+      if (data.payload?.success) {
+        console.log("delete product response", data.payload);
+        toast.success(data.payload?.message);
+        dispatch(fetchAllProducts());
+      } else {
+        toast.error(data.payload);
       }
-    }
-    )
-    
-  }
+    });
+  };
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  
   console.log("product list", productsList);
-  
+
   return (
     <Fragment>
       <div className="space-y-4 ">
@@ -93,7 +98,7 @@ const AdminProducts = () => {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-auto">
-          {isLoading || isDeleteProduct||isAddingProduct ? (
+          {isLoading || isDeleteProduct || isAddingProduct ? (
             Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="space-y-4 mt-6">
                 <Skeleton className="w-full h-40 mb-4 rounded-md" />
@@ -111,7 +116,6 @@ const AdminProducts = () => {
                 setOpenAddProduct={setOpenAddProduct}
                 setFormData={setFormData}
                 deleteProduct={deleteProduct}
-                
               />
             ))
           ) : (
@@ -124,7 +128,14 @@ const AdminProducts = () => {
 
       <Sheet
         open={openAddProduct}
-        onOpenChange={() => setOpenAddProduct(false)}
+        onOpenChange={(open) => {
+          setOpenAddProduct(open);
+          if (!open) {
+            setFormData(initialFormdata);
+            setImageFile(null);
+            setCurrentEditedId(null);
+          }
+        }}
       >
         <SheetContent
           side="right"
@@ -143,7 +154,11 @@ const AdminProducts = () => {
             </div>
           ) : (
             <>
-              <ImageUpload file={imageFile} setFile={setImageFile} currentEditedId={currentEditedId} />
+              <ImageUpload
+                file={imageFile}
+                setFile={setImageFile}
+                currentEditedId={currentEditedId}
+              />
               <div className="py-6">
                 <CommonForm
                   formData={formData}

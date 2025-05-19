@@ -7,6 +7,7 @@ const initialState = {
   productsList: [],
   isAddingProduct:false,
   isDeleteProduct:false,
+  isEditProduct:false,
 };
 
 //fetch all product section
@@ -100,6 +101,11 @@ const AdminProductSlice = createSlice({
       })
       .addCase(deleteExistProduct.rejected,(state)=>{
         state.isDeleteProduct=false
+      })
+
+      // edit product function 
+      .addCase(editExistProduct.pending,(state)=>{
+
       })
       
   },
