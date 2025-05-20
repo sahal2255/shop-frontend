@@ -14,6 +14,7 @@ import { axiosInstance } from "@/helpers/axiosInstance";
 import {
   addNewProduct,
   deleteExistProduct,
+  editExistProduct,
   fetchAllProducts,
 } from "@/store/admin/product-slice";
 import React, { Fragment, useEffect, useState } from "react";
@@ -51,7 +52,14 @@ const AdminProducts = () => {
         form.append(key, value);
       });
       if(currentEditedId){
-
+        // console.log('edited form data',form)
+        dispatch(editExistProduct({id:currentEditedId,form})).then((data)=>{
+          if(data.payload?.success){
+            console.log('edit payload',data.payload)
+            setOpenAddProduct(false)
+            setCurrentEditedId(null)
+          }
+        })
       }else{
 
         dispatch(addNewProduct(form)).then((data) => {
