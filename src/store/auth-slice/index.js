@@ -61,10 +61,23 @@ export const checkAuth = createAsyncThunk("/auth/check-auth", async () => {
     return message;
   }
 });
-// logout function
-// export const logout=createSlice({
 
-// })
+// logout function
+export const logOutUser=createAsyncThunk('/auth/logout',async()=>{
+  try {
+    const response = await axios.post('http://localhost:7002/api/auth/logout',
+      {},
+      { withCredentials: true }
+    )
+    console.log('response',response)
+    return response.data
+  } catch (error) {
+    console.log('logout error ',error)
+    const message = error.response?.data?.message || "Something went wrong";
+    return message
+  }
+  
+})
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -112,7 +125,20 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
-      });
+      })
+      // logout
+      .addCase(logOutUser.pending,(state)=>{
+        state.isLoading=true;
+      })
+      .addCase(logOutUser.fulfilled,(state,action)=>{
+        state.isLoading=false;
+        state.user=null;
+        state.isAuthenticated=false
+      })
+      .addCase(logOutUser.rejected,(state)=>{
+        state.isLoading=false;
+        state.isAuthenticated=false
+      })
   },
 });
 

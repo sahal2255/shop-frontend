@@ -36,7 +36,7 @@ const AdminProducts = () => {
   const [imageFile, setImageFile] = useState(null);
   const [currentEditedId, setCurrentEditedId] = useState(null);
   // const [currentDeleteId,setCurrentDeleteId]=useState(null)
-  const { productsList, isLoading, isAddingProduct, isDeleteProduct } =
+  const { productsList, isLoading, isAddingProduct, isDeleteProduct,isEditProduct } =
     useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
 
@@ -52,16 +52,19 @@ const AdminProducts = () => {
         form.append(key, value);
       });
       if(currentEditedId){
-        // console.log('edited form data',form)
         dispatch(editExistProduct({id:currentEditedId,form})).then((data)=>{
           if(data.payload?.success){
-            console.log('edit payload',data.payload)
             setOpenAddProduct(false)
             setCurrentEditedId(null)
+            setImageFile(null)
+            setFormData(initialFormdata)
+            toast.success(data.payload?.message)
+            dispatch(fetchAllProducts())
+          }else{
+            toast.error(data.payload)
           }
         })
       }else{
-
         dispatch(addNewProduct(form)).then((data) => {
           if (data.payload?.success) {
             console.log("datapayload", data.payload);
@@ -106,7 +109,7 @@ const AdminProducts = () => {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-auto">
-          {isLoading || isDeleteProduct || isAddingProduct ? (
+          {isLoading || isDeleteProduct || isAddingProduct || isEditProduct ? (
             Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="space-y-4 mt-6">
                 <Skeleton className="w-full h-40 mb-4 rounded-md" />

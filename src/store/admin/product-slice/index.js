@@ -47,13 +47,14 @@ export const editExistProduct=createAsyncThunk(
     console.log('edited formdata in the slice',form)
     const response=await axios.put(
       `http://localhost:7002/api/admin/product/edit/${id}`,
-      formData,
+      form,
       {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       }
     )
+    return response.data
   }
 )
 
@@ -101,6 +102,17 @@ const AdminProductSlice = createSlice({
         state.isAddingProduct = false;
       })
 
+      // edit product function 
+      .addCase(editExistProduct.pending,(state)=>{
+        state.isEditProduct=true
+      })
+      .addCase(editExistProduct.fulfilled,(state)=>{
+        state.isEditProduct=false
+      })
+      .addCase(editExistProduct.rejected,(state)=>{
+        state.isEditProduct=false
+      })
+      
       // delete product section 
       .addCase(deleteExistProduct.pending,(state)=>{
         state.isDeleteProduct=true
@@ -115,16 +127,6 @@ const AdminProductSlice = createSlice({
         state.isDeleteProduct=false
       })
 
-      // edit product function 
-      // .addCase(editExistProduct.pending,(state)=>{
-      //   state.isEditProduct=true
-      // })
-      // .addCase(deleteExistProduct.fulfilled,(state)=>{
-      //   state.isEditProduct=false
-      // })
-      // .addCase(editExistProduct.rejected,(state)=>{
-      //   state.isEditProduct=false
-      // })
       
   },
 });
