@@ -19,16 +19,17 @@ import CheckAuth from "./components/common/CheckAuth";
 import Unauth from "./pages/unauth-pages/Unauth";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "./store/auth-slice";
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 const App = () => {
+  const { user, isAuthenticated, isLoading } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
 
-  const {user,isAuthenticated,isLoading}=useSelector(state=>state.auth)
-  const dispatch=useDispatch()
-
-  useEffect(()=>{
-    dispatch(checkAuth())
-  },[dispatch])
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   if (isLoading) {
     return (
@@ -41,7 +42,7 @@ const App = () => {
       </div>
     );
   }
-   
+
   return (
     <div className=" flex flex-col overflow-hidden bg-white">
       <Routes>
@@ -69,6 +70,12 @@ const App = () => {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
         </Route>
+
+        <Route path="/shop" element={<ShoppingLayout />}>
+          <Route path="home" element={<Home />} />
+          <Route path="products" element={<Products />} />
+        </Route>
+
         <Route
           path="/shop"
           element={
@@ -77,15 +84,13 @@ const App = () => {
             </CheckAuth>
           }
         >
-          <Route path="shopping" element={<Shopping />} />
-          <Route path="products" element={<Products />} />
           <Route path="account" element={<Account />} />
-          <Route path="home" element={<Home />} />
           <Route path="checkout" element={<Checkout />} />
+          <Route path="shopping" element={<Shopping />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
-        <Route path="/unauth-page" element={<Unauth />}/>
+        <Route path="/unauth-page" element={<Unauth />} />
       </Routes>
     </div>
   );
