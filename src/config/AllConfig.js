@@ -128,4 +128,37 @@ export const addProductFormElement = [
       placeholder: 'Enter Sale Price'
     }
   ];
-  
+
+
+  export const shoppingViewMenuItems=[
+    {
+      id:'home',
+      label:'Home',
+      to:'/shop/home'
+    },
+    {
+      id:'men',
+      label:'Men',
+      to:'/shop/products'
+    },
+    {
+      id:'women',
+      label:'Women',
+      to:'/shop/products'
+    },
+    {
+      id:'kids',
+      label:'Kids',
+      to:'/shop/products'
+    },
+    {
+      id:'watch',
+      label:'Watch',
+      to:'/shop/products'
+    },
+    {
+      id:'accessories',
+      label:'Accessories',
+      to:'/shop/products'
+    },
+  ]
