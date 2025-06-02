@@ -162,3 +162,28 @@ export const addProductFormElement = [
       to:'/shop/products'
     },
   ]
+
+
+  export const filterOptions = {
+    category: [
+      { id: 'men', label: 'Men' },
+      { id: 'women', label: 'Women' },
+      { id: 'kids', label: 'Kids' },
+      { id: 'footwear', label: 'Footwear' },
+      { id: 'watches', label: 'Watches' },
+      { id: 'accessories', label: 'Accessories' },
+    ],
+    brand: [
+      { id: 'nike', label: 'Nike' },
+      { id: 'adidas', label: 'Adidas' },
+      { id: 'puma', label: 'Puma' },
+      { id: 'reebok', label: 'Reebok' },
+      { id: 'levis', label: "Levi's" },
+      { id: 'hm', label: 'H&M' },
+      { id: 'fossil', label: 'Fossil' },
+      { id: 'casio', label: 'Casio' },
+      { id: 'boat', label: 'Boat' },
+      { id: 'titan', label: 'Titan' },
+    ],
+  };
+  
