@@ -91,7 +91,7 @@ const ShoppingHeader = () => {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs py-10 items-center text-center">
             <MenuItems />
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <div className="mt-8">
                 <HeaderRightSection
                   user={user}
@@ -99,7 +99,12 @@ const ShoppingHeader = () => {
                   handleLogout={handleLogout}
                 />
               </div>
-            )}
+            ):(
+              <Button variant='default' onClick={()=>navigate('/auth/login')}>
+                Login 
+              </Button>
+            )
+            }
           </SheetContent>
         </Sheet>
 
@@ -109,7 +114,7 @@ const ShoppingHeader = () => {
         </div>
 
         {/* Right Section */}
-        {isAuthenticated && (
+        {isAuthenticated ? (
           <div className="hidden md:flex">
             <HeaderRightSection
               user={user}
@@ -117,7 +122,12 @@ const ShoppingHeader = () => {
               handleLogout={handleLogout}
             />
           </div>
-        )}
+        ):(
+          <Button variant='default' onClick={()=>navigate('/auth/login')}>
+            Login
+          </Button>
+        )
+        }
       </div>
     </header>
   );
