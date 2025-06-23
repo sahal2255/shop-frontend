@@ -187,3 +187,10 @@ export const addProductFormElement = [
     ],
   };
   
+  export const sortByOptions = [
+  { id: "default", label: "Default" },
+  { id: "priceLowToHigh", label: "Price: Low to High" },
+  { id: "priceHighToLow", label: "Price: High to Low" },
+  { id: "newest", label: "Newest First" },
+  { id: "popular", label: "Most Popular" },
+]
