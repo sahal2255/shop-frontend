@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ProductFilter from "./Filter";
 import {
   DropdownMenu,
@@ -11,8 +11,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { px } from "framer-motion";
 import { sortByOptions } from "@/config/AllConfig";
+import { useDispatch } from "react-redux";
 
 const Products = () => {
+  useEffect(()=>{
+    
+  })
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4">
       <ProductFilter />
@@ -45,7 +49,9 @@ const Products = () => {
           </div>
         </div>
         {/* You can render your product grid here */}
-        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+        </div>
       </div>
     </div>
   );
