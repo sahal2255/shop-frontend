@@ -9,14 +9,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { px } from "framer-motion";
 import { sortByOptions } from "@/config/AllConfig";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsForUser } from "@/store/user/shop-slice";
+import { Skeleton } from "@/components/ui/skeleton";
+import ShoppingProductTile from "@/components/shopping-view/ShoppingProductTile";
 
 const Products = () => {
-  useEffect(()=>{
-    
-  })
+  const { productsList, isLoading } = useSelector(
+    (state) => state.userProducts
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchProductsForUser());
+  }, []);
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4">
       <ProductFilter />
@@ -49,8 +55,28 @@ const Products = () => {
           </div>
         </div>
         {/* You can render your product grid here */}
-        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-
+        <div className="p-4 [calc(100vh-150px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {isLoading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="space-y-4 mt-6">
+                <Skeleton className="w-full h-40 mb-4 rounded-md" />
+                <Skeleton className="w-3/4 h-6 mb-2 rounded" />
+                <Skeleton className="w-1/2 h-5 mb-2 rounded" />
+                <Skeleton className="w-full h-10 rounded" />
+              </div>
+            ))
+          ) : productsList?.length ? (
+            productsList.map((product) => (
+              <ShoppingProductTile
+                key={product._id || product.id}
+                product={product}
+              />
+            ))
+          ) : (
+            <p className="col-span-full text-center text-muted-foreground">
+              No products found.
+            </p>
+          )}
         </div>
       </div>
     </div>
