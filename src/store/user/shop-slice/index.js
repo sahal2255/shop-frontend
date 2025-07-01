@@ -14,19 +14,12 @@ export const fetchProductsForUser=createAsyncThunk(
         const response=await axios.get(
             "http://localhost:7002/api/shop/products"
         )
-        console.log('fetch shop products',response)
+        // console.log('fetch shop products',response)
         return response.data
     }
 )
 
-// export const fetchFilteredProducts=await axios.get(
-//     'shop/getproducts',
-//     async ()=>{
-//         const response=await axios.get("http://localhost:7002/api/shop/getproducts")
-//         console.log('fetch shop products',response)
-//         return response.data
-//     }
-// )
+
 
 const UserProductSlice=createSlice({
     name:'userProducts',

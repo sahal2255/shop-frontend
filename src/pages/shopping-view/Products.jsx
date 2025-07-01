@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ProductFilter from "./Filter";
 import {
   DropdownMenu,
@@ -16,10 +16,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ShoppingProductTile from "@/components/shopping-view/ShoppingProductTile";
 
 const Products = () => {
+  const dispatch = useDispatch();
   const { productsList, isLoading } = useSelector(
     (state) => state.userProducts
   );
-  const dispatch = useDispatch();
+  const [filters,setFilters]=useState(null)
+  const [sort,setSort]=useState(null) 
+
+  const handleSort=(value)=>{
+    console.log(value);
+    
+  }
+
+
   useEffect(() => {
     dispatch(fetchProductsForUser());
   }, []);
@@ -30,7 +39,7 @@ const Products = () => {
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>
           <div className="flex items-center gap-4">
-            <span className="text-muted-foreground text-sm ">10 Products</span>
+            <span className="text-muted-foreground text-sm ">{productsList?.length} Products</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -43,7 +52,7 @@ const Products = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuRadioGroup>
+                <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
                   {sortByOptions.map((sortItem) => (
                     <DropdownMenuRadioItem key={sortItem.id}>
                       {sortItem.label}
@@ -55,7 +64,7 @@ const Products = () => {
           </div>
         </div>
         {/* You can render your product grid here */}
-        <div className="p-4 [calc(100vh-150px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="p-4 [calc(100vh-150px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {isLoading ? (
             Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="space-y-4 mt-6">
