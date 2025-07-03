@@ -14,27 +14,61 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsForUser } from "@/store/user/shop-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import ShoppingProductTile from "@/components/shopping-view/ShoppingProductTile";
-
+import { createSearchParams, useSearchParams } from "react-router-dom";
+import createSearchParamsHelper from "@/helpers/SearchParamsHelper";
 const Products = () => {
   const dispatch = useDispatch();
   const { productsList, isLoading } = useSelector(
     (state) => state.userProducts
   );
-  const [filters,setFilters]=useState(null)
+  const [filters,setFilters]=useState({})
   const [sort,setSort]=useState(null) 
-
+  const [serchParams,setSearchParams]=useSearchParams()
   const handleSort=(value)=>{
     console.log(value);
-    
+    setSort(value)
   }
 
+  const handleFilter=(getSectionId,getCurrentOption)=>{
+    //  console.log('category',getSectionId,getCurrentOption)
+    let copyFilters={...filters};
+    const indexOfCurrentSection=Object.keys(copyFilters).indexOf(getSectionId)
+    if(indexOfCurrentSection === -1){
+      copyFilters={
+        ...copyFilters,
+        [getSectionId]:[getCurrentOption]
+      }
+    }
+    else{
+      const indexOfCurrentOption=copyFilters[getSectionId].indexOf(getCurrentOption)
+      if(indexOfCurrentOption === -1){
+        copyFilters[getSectionId].push(getCurrentOption)
+      }else{
+        copyFilters[getSectionId].splice(indexOfCurrentOption,1)
+      }
+    }
+    setFilters(copyFilters)
+    sessionStorage.setItem('filters',JSON.stringify(copyFilters))
+  }
+  console.log('filter',filters);
 
+  useEffect(()=>{
+    setSort('default')
+    setFilters(JSON.parse(sessionStorage.getItem('filters'))||{})
+  },[])
+  useEffect(()=>{
+    if(filters && Object.keys(filters).length >0){
+      const createQueryString=createSearchParamsHelper(filters)
+      setSearchParams(new URLSearchParams())
+    }
+  },[filters])
   useEffect(() => {
-    dispatch(fetchProductsForUser());
-  }, []);
+    if(filters !==null && sort !==null)
+    dispatch(fetchProductsForUser({filterParams:filters,sortParams:sort}));
+  }, [dispatch,sort,filters]);
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4">
-      <ProductFilter />
+      <ProductFilter filters={filters} handleFilter={handleFilter}/>
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>
@@ -52,9 +86,9 @@ const Products = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
+                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortByOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem key={sortItem.id}>
+                    <DropdownMenuRadioItem value={sortItem.id} key={sortItem.id}>
                       {sortItem.label}
                     </DropdownMenuRadioItem>
                   ))}

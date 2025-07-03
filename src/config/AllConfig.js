@@ -191,6 +191,6 @@ export const addProductFormElement = [
   { id: "default", label: "Default" },
   { id: "priceLowToHigh", label: "Price: Low to High" },
   { id: "priceHighToLow", label: "Price: High to Low" },
-  { id: "newest", label: "Newest First" },
-  { id: "popular", label: "Most Popular" },
+  { id: "nameatoz", label: "Name A-Z" },
+  { id: "nameztoa", label: "Name Z-A" },
 ]

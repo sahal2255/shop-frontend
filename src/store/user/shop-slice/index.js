@@ -8,16 +8,32 @@ const initialState={
 }
 
 
-export const fetchProductsForUser=createAsyncThunk(
-    '/shop/product',
-    async()=>{
-        const response=await axios.get(
-            "http://localhost:7002/api/shop/products"
-        )
-        // console.log('fetch shop products',response)
-        return response.data
+export const fetchProductsForUser = createAsyncThunk(
+  "/shop/product",
+  async ({ filterParams, sortParams }) => {
+    const query = new URLSearchParams();
+
+    if (filterParams) {
+      if (filterParams.category) {
+        query.append("category", filterParams.category.join(","));
+      }
+      if (filterParams.brand) {
+        query.append("brand", filterParams.brand.join(","));
+      }
     }
-)
+
+    if (sortParams) {
+      query.append("sortBy", sortParams);
+    }
+
+    const response = await axios.get(
+      `http://localhost:7002/api/shop/products?${query}`
+    );
+
+    return response.data;
+  }
+);
+
 
 
 
