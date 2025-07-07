@@ -4,10 +4,13 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { IndianRupee } from 'lucide-react';
 
-const ShoppingProductTile = ({ product }) => {
+const ShoppingProductTile = ({ product ,handleGetSingleProduct}) => {
+  
   return (
     <Card className="w-full max-w-sm mx-auto rounded-xl overflow-hidden shadow-md bg-white dark:bg-zinc-900">
-      <div className="relative">
+      <div onClick={()=>handleGetSingleProduct(product._id)}>
+
+      <div className="relative" >
         <img
           src={product?.imageFile}
           alt={product?.productName}
@@ -48,6 +51,8 @@ const ShoppingProductTile = ({ product }) => {
           {parseInt(product.totalStock) === 0 ? 'Out of Stock' : 'Add to Cart'}
         </Button>
       </div>
+      </div>
+
     </Card>
   );
 };

@@ -11,24 +11,27 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { sortByOptions } from "@/config/AllConfig";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductsForUser } from "@/store/user/shop-slice";
+import { fetchProductDetails, fetchProductsForUser } from "@/store/user/shop-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import ShoppingProductTile from "@/components/shopping-view/ShoppingProductTile";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import createSearchParamsHelper from "@/helpers/SearchParamsHelper";
+import SingleProductDetails from "@/components/shopping-view/SingleProudctDtials";
 const Products = () => {
   const dispatch = useDispatch();
-  const { productsList, isLoading } = useSelector(
+  const { productsList, isLoading,singleProduct } = useSelector(
     (state) => state.userProducts
   );
   const [filters,setFilters]=useState({})
   const [sort,setSort]=useState(null) 
   const [serchParams,setSearchParams]=useSearchParams()
+  const [open,setOpen]=useState(false)
   const handleSort=(value)=>{
     console.log(value);
     setSort(value)
   }
 
+  // filter function
   const handleFilter=(getSectionId,getCurrentOption)=>{
     //  console.log('category',getSectionId,getCurrentOption)
     let copyFilters={...filters};
@@ -50,8 +53,16 @@ const Products = () => {
     setFilters(copyFilters)
     sessionStorage.setItem('filters',JSON.stringify(copyFilters))
   }
-  console.log('filter',filters);
 
+  //get single product by id 
+  const handleGetSingleProduct=(id)=>{
+    console.log('product id',id)
+    setOpen(true)
+    dispatch(fetchProductDetails(id))
+  }
+
+  console.log('single productby id ',singleProduct);
+  
   useEffect(()=>{
     setSort('default')
     setFilters(JSON.parse(sessionStorage.getItem('filters'))||{})
@@ -113,6 +124,7 @@ const Products = () => {
               <ShoppingProductTile
                 key={product._id || product.id}
                 product={product}
+                handleGetSingleProduct={handleGetSingleProduct}
               />
             ))
           ) : (
@@ -122,6 +134,7 @@ const Products = () => {
           )}
         </div>
       </div>
+      <SingleProductDetails open={open} setOpen={setOpen} product={singleProduct}/>
     </div>
   );
 };
