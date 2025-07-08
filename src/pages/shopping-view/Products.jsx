@@ -17,11 +17,13 @@ import ShoppingProductTile from "@/components/shopping-view/ShoppingProductTile"
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import createSearchParamsHelper from "@/helpers/SearchParamsHelper";
 import SingleProductDetails from "@/components/shopping-view/SingleProudctDtials";
+import { addToCart } from "@/store/user/cart-slice";
 const Products = () => {
   const dispatch = useDispatch();
   const { productsList, isLoading,singleProduct } = useSelector(
     (state) => state.userProducts
   );
+  const {user} =useSelector(state=>state.auth)
   const [filters,setFilters]=useState({})
   const [sort,setSort]=useState(null) 
   const [serchParams,setSearchParams]=useSearchParams()
@@ -61,8 +63,14 @@ const Products = () => {
     dispatch(fetchProductDetails(id))
   }
 
-  console.log('single productby id ',singleProduct);
-  
+  // add to cart function
+  const handleAddToCart=(productId)=>{
+    console.log('add to cart product id',productId)
+    dispatch(addToCart({userId:user?.id,productId,quantity:1})).then((data)=>console.log('data',data))
+  }
+console.log('user from ',user);
+
+
   useEffect(()=>{
     setSort('default')
     setFilters(JSON.parse(sessionStorage.getItem('filters'))||{})
@@ -125,6 +133,7 @@ const Products = () => {
                 key={product._id || product.id}
                 product={product}
                 handleGetSingleProduct={handleGetSingleProduct}
+                handleAddToCart={handleAddToCart}
               />
             ))
           ) : (

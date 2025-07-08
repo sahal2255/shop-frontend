@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card } from '../ui/card';
+import { Card, CardFooter } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { IndianRupee } from 'lucide-react';
 
-const ShoppingProductTile = ({ product ,handleGetSingleProduct}) => {
+const ShoppingProductTile = ({ product ,handleGetSingleProduct,handleAddToCart}) => {
   
   return (
     <Card className="w-full max-w-sm mx-auto rounded-xl overflow-hidden shadow-md bg-white dark:bg-zinc-900">
@@ -47,11 +47,14 @@ const ShoppingProductTile = ({ product ,handleGetSingleProduct}) => {
           )}
         </div>
 
-        <Button className="w-full mt-2" disabled={parseInt(product.totalStock) === 0}>
+      </div>
+      </div>
+      <CardFooter>
+
+        <Button onClick={()=>handleAddToCart(product._id)} className="w-full mt-2" disabled={parseInt(product.totalStock) === 0}>
           {parseInt(product.totalStock) === 0 ? 'Out of Stock' : 'Add to Cart'}
         </Button>
-      </div>
-      </div>
+      </CardFooter>
 
     </Card>
   );

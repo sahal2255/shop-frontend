@@ -1,5 +1,5 @@
 import { House, LogOut, Menu, ShoppingCart, User } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SheetTrigger, Sheet, SheetContent } from "../ui/sheet";
 import { Button } from "../ui/button";
@@ -15,6 +15,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logOutUser } from "@/store/auth-slice";
+import CartWrapper from "./CartWrapper";
 
 // Navigation Menu Items
 const MenuItems = () => (
@@ -32,12 +33,16 @@ const MenuItems = () => (
 );
 
 // Right Section with Cart and Avatar
-const HeaderRightSection = ({ user, navigate, handleLogout }) => (
+const HeaderRightSection = ({ user, navigate, handleLogout, openCart, setOpenCart }) => (
   <div className="flex items-center gap-4">
-    <Button variant="outline" size="icon">
+    <Sheet open={openCart} onOpenChange={()=>setOpenCart(false)}>
+
+    <Button variant="outline" size="icon" onClick={()=>setOpenCart(true)}>
       <ShoppingCart className="w-6 h-6" />
       <span className="sr-only">User Cart</span>
     </Button>
+    <CartWrapper />
+    </Sheet>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="bg-black cursor-pointer">
@@ -66,6 +71,7 @@ const HeaderRightSection = ({ user, navigate, handleLogout }) => (
 // Main Header Component
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [openCart,setOpenCart]=useState(false)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
@@ -97,6 +103,8 @@ const ShoppingHeader = () => {
                   user={user}
                   navigate={navigate}
                   handleLogout={handleLogout}
+                  openCart={openCart}
+                  setOpenCart={setOpenCart}
                 />
               </div>
             ):(
@@ -120,6 +128,8 @@ const ShoppingHeader = () => {
               user={user}
               navigate={navigate}
               handleLogout={handleLogout}
+              openCart={openCart}
+              setOpenCart={setOpenCart}
             />
           </div>
         ):(
