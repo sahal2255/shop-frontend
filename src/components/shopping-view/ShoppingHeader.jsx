@@ -1,5 +1,5 @@
 import { House, LogOut, Menu, ShoppingCart, User } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SheetTrigger, Sheet, SheetContent } from "../ui/sheet";
 import { Button } from "../ui/button";
@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { logOutUser } from "@/store/auth-slice";
 import CartWrapper from "./CartWrapper";
+import { fetchCartItems } from "@/store/user/cart-slice";
 
 // Navigation Menu Items
 const MenuItems = () => (
@@ -33,7 +34,8 @@ const MenuItems = () => (
 );
 
 // Right Section with Cart and Avatar
-const HeaderRightSection = ({ user, navigate, handleLogout, openCart, setOpenCart }) => (
+const HeaderRightSection = ({ user, navigate, handleLogout, openCart, setOpenCart ,cartItems}) => (
+  
   <div className="flex items-center gap-4">
     <Sheet open={openCart} onOpenChange={()=>setOpenCart(false)}>
 
@@ -41,7 +43,7 @@ const HeaderRightSection = ({ user, navigate, handleLogout, openCart, setOpenCar
       <ShoppingCart className="w-6 h-6" />
       <span className="sr-only">User Cart</span>
     </Button>
-    <CartWrapper />
+    <CartWrapper cartItems={cartItems&& cartItems.items && cartItems.items.length >0 ? cartItems.items:[] }/>
     </Sheet>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -71,12 +73,17 @@ const HeaderRightSection = ({ user, navigate, handleLogout, openCart, setOpenCar
 // Main Header Component
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { cartItems }=useSelector((state)=>state.shopCart)
+
   const [openCart,setOpenCart]=useState(false)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logOutUser());
   };
+  useEffect(()=>{
+    dispatch(fetchCartItems(user?.id))
+  },[dispatch])
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
@@ -105,6 +112,7 @@ const ShoppingHeader = () => {
                   handleLogout={handleLogout}
                   openCart={openCart}
                   setOpenCart={setOpenCart}
+                  cartItems={cartItems && cartItems.items && cartItems.items.length >0 ? cartItems.items :[]}
                 />
               </div>
             ):(
@@ -130,6 +138,7 @@ const ShoppingHeader = () => {
               handleLogout={handleLogout}
               openCart={openCart}
               setOpenCart={setOpenCart}
+              cartItems={cartItems}
             />
           </div>
         ):(

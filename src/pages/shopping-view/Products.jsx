@@ -11,88 +11,103 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { sortByOptions } from "@/config/AllConfig";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductDetails, fetchProductsForUser } from "@/store/user/shop-slice";
+import {
+  fetchProductDetails,
+  fetchProductsForUser,
+} from "@/store/user/shop-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import ShoppingProductTile from "@/components/shopping-view/ShoppingProductTile";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import createSearchParamsHelper from "@/helpers/SearchParamsHelper";
 import SingleProductDetails from "@/components/shopping-view/SingleProudctDtials";
-import { addToCart } from "@/store/user/cart-slice";
+import { addToCart, fetchCartItems } from "@/store/user/cart-slice";
 const Products = () => {
   const dispatch = useDispatch();
-  const { productsList, isLoading,singleProduct } = useSelector(
+  const { productsList, isLoading, singleProduct } = useSelector(
     (state) => state.userProducts
   );
-  const {user} =useSelector(state=>state.auth)
-  const [filters,setFilters]=useState({})
-  const [sort,setSort]=useState(null) 
-  const [serchParams,setSearchParams]=useSearchParams()
-  const [open,setOpen]=useState(false)
-  const handleSort=(value)=>{
+  const { user } = useSelector((state) => state.auth);
+  const { cartItems }=useSelector((state)=>state.shopCart)
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState(null);
+  const [serchParams, setSearchParams] = useSearchParams();
+  const [open, setOpen] = useState(false);
+  const handleSort = (value) => {
     console.log(value);
-    setSort(value)
-  }
+    setSort(value);
+  };
 
   // filter function
-  const handleFilter=(getSectionId,getCurrentOption)=>{
+  const handleFilter = (getSectionId, getCurrentOption) => {
     //  console.log('category',getSectionId,getCurrentOption)
-    let copyFilters={...filters};
-    const indexOfCurrentSection=Object.keys(copyFilters).indexOf(getSectionId)
-    if(indexOfCurrentSection === -1){
-      copyFilters={
+    let copyFilters = { ...filters };
+    const indexOfCurrentSection =
+      Object.keys(copyFilters).indexOf(getSectionId);
+    if (indexOfCurrentSection === -1) {
+      copyFilters = {
         ...copyFilters,
-        [getSectionId]:[getCurrentOption]
+        [getSectionId]: [getCurrentOption],
+      };
+    } else {
+      const indexOfCurrentOption =
+        copyFilters[getSectionId].indexOf(getCurrentOption);
+      if (indexOfCurrentOption === -1) {
+        copyFilters[getSectionId].push(getCurrentOption);
+      } else {
+        copyFilters[getSectionId].splice(indexOfCurrentOption, 1);
       }
     }
-    else{
-      const indexOfCurrentOption=copyFilters[getSectionId].indexOf(getCurrentOption)
-      if(indexOfCurrentOption === -1){
-        copyFilters[getSectionId].push(getCurrentOption)
-      }else{
-        copyFilters[getSectionId].splice(indexOfCurrentOption,1)
-      }
-    }
-    setFilters(copyFilters)
-    sessionStorage.setItem('filters',JSON.stringify(copyFilters))
-  }
+    setFilters(copyFilters);
+    sessionStorage.setItem("filters", JSON.stringify(copyFilters));
+  };
 
-  //get single product by id 
-  const handleGetSingleProduct=(id)=>{
-    console.log('product id',id)
-    setOpen(true)
-    dispatch(fetchProductDetails(id))
-  }
+  //get single product by id
+  const handleGetSingleProduct = (id) => {
+    console.log("product id", id);
+    setOpen(true);
+    dispatch(fetchProductDetails(id));
+  };
 
   // add to cart function
-  const handleAddToCart=(productId)=>{
-    console.log('add to cart product id',productId)
-    dispatch(addToCart({userId:user?.id,productId,quantity:1})).then((data)=>console.log('data',data))
-  }
-console.log('user from ',user);
-
-
-  useEffect(()=>{
-    setSort('default')
-    setFilters(JSON.parse(sessionStorage.getItem('filters'))||{})
-  },[])
-  useEffect(()=>{
-    if(filters && Object.keys(filters).length >0){
-      const createQueryString=createSearchParamsHelper(filters)
-      setSearchParams(new URLSearchParams())
-    }
-  },[filters])
+  const handleAddToCart = (productId) => {
+    console.log("add to cart product id", productId);
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then((data)=>{
+      // console.log('data',data)
+      if(data?.payload.success){
+        dispatch(fetchCartItems(user.id))
+      }
+    });
+  };
+  
   useEffect(() => {
-    if(filters !==null && sort !==null)
-    dispatch(fetchProductsForUser({filterParams:filters,sortParams:sort}));
-  }, [dispatch,sort,filters]);
+    setSort("default");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, []);
+  useEffect(() => {
+    if (filters && Object.keys(filters).length > 0) {
+      const createQueryString = createSearchParamsHelper(filters);
+      setSearchParams(new URLSearchParams());
+    }
+  }, [filters]);
+  useEffect(() => {
+    if (filters !== null && sort !== null)
+      dispatch(
+        fetchProductsForUser({ filterParams: filters, sortParams: sort })
+      );
+  }, [dispatch, sort, filters]);
+
+  console.log('cart items',cartItems);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4">
-      <ProductFilter filters={filters} handleFilter={handleFilter}/>
+      <ProductFilter filters={filters} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>
           <div className="flex items-center gap-4">
-            <span className="text-muted-foreground text-sm ">{productsList?.length} Products</span>
+            <span className="text-muted-foreground text-sm ">
+              {productsList?.length} Products
+            </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -107,7 +122,10 @@ console.log('user from ',user);
               <DropdownMenuContent align="end" className="w-[200px]">
                 <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortByOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem value={sortItem.id} key={sortItem.id}>
+                    <DropdownMenuRadioItem
+                      value={sortItem.id}
+                      key={sortItem.id}
+                    >
                       {sortItem.label}
                     </DropdownMenuRadioItem>
                   ))}
@@ -143,7 +161,11 @@ console.log('user from ',user);
           )}
         </div>
       </div>
-      <SingleProductDetails open={open} setOpen={setOpen} product={singleProduct}/>
+      <SingleProductDetails
+        open={open}
+        setOpen={setOpen}
+        product={singleProduct}
+      />
     </div>
   );
 };

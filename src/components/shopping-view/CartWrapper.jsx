@@ -1,15 +1,20 @@
 import React from 'react'
 import { SheetContent, SheetHeader,SheetTitle } from '../ui/sheet'
 import { Button } from '../ui/button'
+import CartContent from './CartContent'
 
-const CartWrapper = () => {
+const CartWrapper = ({cartItems}) => {
+  // console.log('cart item in the cart wrapper',cartItems.populateCartItems)
   return (
     <SheetContent className='sm:max-w-md'>
         <SheetHeader>
-            <SheetTitle>Your Cart</SheetTitle>
+            <SheetTitle className='text-center font-extrabold'>Your Cart</SheetTitle>
         </SheetHeader>
-        <div className='mt-8 space-y-4'>
-
+        <div className='mt-2 space-y-2'>
+          {
+            cartItems  && cartItems.length >0 ?
+            cartItems.map(item=><CartContent key={item._id} cartItem={item}/>):null
+          }
         </div>
         <div className='mt-8 space-y-4'>
             <div className='flex justify-between'>
