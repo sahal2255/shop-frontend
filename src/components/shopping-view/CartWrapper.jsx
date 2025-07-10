@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import CartContent from './CartContent'
 
 const CartWrapper = ({cartItems}) => {
-  // console.log('cart item in the cart wrapper',cartItems.populateCartItems)
+  // console.log('cart item in the cart wrapper',cartItems)
   return (
     <SheetContent className='sm:max-w-md'>
         <SheetHeader>

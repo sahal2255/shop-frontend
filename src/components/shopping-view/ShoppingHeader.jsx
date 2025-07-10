@@ -43,7 +43,7 @@ const HeaderRightSection = ({ user, navigate, handleLogout, openCart, setOpenCar
       <ShoppingCart className="w-6 h-6" />
       <span className="sr-only">User Cart</span>
     </Button>
-    <CartWrapper cartItems={cartItems&& cartItems.items && cartItems.items.length >0 ? cartItems.items:[] }/>
+    <CartWrapper cartItems={cartItems&& cartItems.populateCartItems && cartItems.populateCartItems.length >0 ? cartItems.populateCartItems:[] }/>
     </Sheet>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

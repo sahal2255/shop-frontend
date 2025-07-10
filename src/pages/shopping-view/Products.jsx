@@ -21,6 +21,7 @@ import { createSearchParams, useSearchParams } from "react-router-dom";
 import createSearchParamsHelper from "@/helpers/SearchParamsHelper";
 import SingleProductDetails from "@/components/shopping-view/SingleProudctDtials";
 import { addToCart, fetchCartItems } from "@/store/user/cart-slice";
+import { toast } from "sonner";
 const Products = () => {
   const dispatch = useDispatch();
   const { productsList, isLoading, singleProduct } = useSelector(
@@ -70,10 +71,11 @@ const Products = () => {
 
   // add to cart function
   const handleAddToCart = (productId) => {
-    console.log("add to cart product id", productId);
+    // console.log("add to cart product id", productId);
     dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then((data)=>{
       // console.log('data',data)
       if(data?.payload.success){
+        toast.success('Product added to cart')
         dispatch(fetchCartItems(user.id))
       }
     });
