@@ -80,7 +80,12 @@ const Products = () => {
       }
     });
   };
-  
+  useEffect(() => {
+  if (user?.id) {
+    dispatch(fetchCartItems(user.id));
+  }
+}, [dispatch, user?.id]);
+
   useEffect(() => {
     setSort("default");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
@@ -97,7 +102,8 @@ const Products = () => {
         fetchProductsForUser({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, sort, filters]);
-
+  console.log('user details',user);
+  
   console.log('cart items',cartItems);
 
   return (
