@@ -1,27 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCartItem } from "@/store/user/cart-slice";
+import { decrementProductQuantity, deleteCartItem, incrementProductQuantity } from "@/store/user/cart-slice";
 import { toast } from "sonner";
 
 const CartContent = ({ cartItem }) => {
-  // console.log('cart item in the cart content',cartItem)
-  const dispatch=useDispatch()
-  // console.log('product id',productId)
-  const {user}=useSelector(state=>state.auth)
+  const [localQuantity, setLocalQuantity] = useState(cartItem.quantity);
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
-  const handleCartItmRemove=(productId)=>{
-    console.log('selected Productid for delete',productId)
-    dispatch(deleteCartItem({productId,user})).then(data=>{
-
-      console.log('data.payload',data.payload)
-      if(data?.payload.success){
-        toast.success("Product removed from the cart")
+  const handleCartItemRemove = (productId) => {
+    dispatch(deleteCartItem({ productId, user })).then((data) => {
+      if (data?.payload.success) {
+        toast.success("Product removed from the cart");
       }
-    })
-  }
-  // console.log('user in the cart',user)
+    });
+  };
+
+  const incrementQuantity = () => {
+    const updatedQuantity = localQuantity + 1;
+    setLocalQuantity(updatedQuantity);
+    dispatch(incrementProductQuantity({
+      userId: user?.id,
+      productId: cartItem.productId,
+      quantity: updatedQuantity
+    }));
+  };
+
+  const decrementQuantity = () => {
+    if (localQuantity <= 1) return;
+    const updatedQuantity = localQuantity - 1;
+    setLocalQuantity(updatedQuantity);
+    dispatch(decrementProductQuantity({
+      userId: user?.id,
+      productId: cartItem.productId,
+      quantity: updatedQuantity
+    }));
+  };
 
   return (
     <div className="flex items-start gap-4 border rounded p-3">
@@ -37,24 +53,34 @@ const CartContent = ({ cartItem }) => {
         <div className="flex justify-between">
           <h4 className="font-medium">{cartItem.productName}</h4>
           <span className="font-semibold text-green-600">
-            ₹{(cartItem.salePrice*cartItem.quantity).toFixed(2)}
+            ₹{(cartItem.salePrice * localQuantity).toFixed(2)}
           </span>
         </div>
 
         <div className="flex items-center gap-3 mt-3">
-          {/* Quantity Controls */}
-          <Button size="icon" variant="outline">
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={decrementQuantity}
+            disabled={localQuantity <= 1}
+          >
             <Minus className="w-4 h-4" />
           </Button>
-          <span className="font-medium">{cartItem.quantity}</span>
-          <Button size="icon" variant="outline">
+
+          <span className="font-medium">{localQuantity}</span>
+
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={incrementQuantity}
+          >
             <Plus className="w-4 h-4" />
           </Button>
 
-          {/* Delete Button */}
-          {/* <Button size="icon" variant="ghost" className="ml-auto text-destructive" onClick={()=>handleCartItmRemove(cartItem?.productId)}> */}
-            <Trash2 className="w-4 h-4 ml-auto" onClick={()=>handleCartItmRemove(cartItem?.productId)}/>
-          {/* </Button> */}
+          <Trash2
+            className="w-4 h-4 ml-auto text-destructive cursor-pointer"
+            onClick={() => handleCartItemRemove(cartItem?.productId)}
+          />
         </div>
       </div>
     </div>
