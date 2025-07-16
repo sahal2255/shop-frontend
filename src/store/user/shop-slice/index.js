@@ -58,7 +58,7 @@ const UserProductSlice=createSlice({
             state.isLoading=true;
         })
         .addCase(fetchProductsForUser.fulfilled,(state,action)=>{
-            console.log('fetch product for user',action.payload)
+            // console.log('fetch product for user',action.payload)
             state.isLoading=false;
             state.productsList=action.payload.data
         })

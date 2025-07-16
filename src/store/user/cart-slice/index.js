@@ -39,22 +39,25 @@ export const deleteCartItem = createAsyncThunk(
 
 
 export const incrementProductQuantity=createAsyncThunk(
-  '/cart/quantity-update/incremnt',
+  '/cart/quantity-update/increment',
   async({userId , productId,quantity})=>{
     const response=await axios.put(
       `http://localhost:7002/api/shop/cart/update-quantity/increment`,
       {userId,productId,quantity}
     )
+    return response.data
   }
 )
 
 export const decrementProductQuantity=createAsyncThunk(
   '/cart/quantity-update/decrement',
-  async()=>{
+  async({userId,productId,quantity})=>{
+    
     const response=await axios.put(
       `http://localhost:7002/api/shop/cart/update-quantity/decrement`,
       {userId,productId,quantity}
     )
+    return response.data
   }
 )
 
@@ -103,6 +106,12 @@ const shoppingCartSlice = createSlice({
         state.isLoading = false;
         state.cartItems = [];
       });
+
+      
+
+      // increase cart quantity
+
+      // decrease cart quantity
   },
 });
 

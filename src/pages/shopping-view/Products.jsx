@@ -102,9 +102,9 @@ const Products = () => {
         fetchProductsForUser({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, sort, filters]);
-  console.log('user details',user);
+  // console.log('user details',user);
   
-  console.log('cart items',cartItems);
+  // console.log('cart items',cartItems);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4">

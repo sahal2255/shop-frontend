@@ -41,14 +41,12 @@ const CartContent = ({ cartItem }) => {
 
   return (
     <div className="flex items-start gap-4 border rounded p-3">
-      {/* Image */}
       <img
         src={cartItem.imageFile}
         alt={cartItem.productName}
         className="w-20 h-20 object-cover rounded"
       />
 
-      {/* Info + Controls */}
       <div className="flex-1">
         <div className="flex justify-between">
           <h4 className="font-medium">{cartItem.productName}</h4>
